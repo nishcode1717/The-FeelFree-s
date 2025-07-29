@@ -1,0 +1,76 @@
+<<!DOCTYPE html>
+<html>
+<head>
+    <title>Mental Health Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .chat-container {
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        #chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .user {
+            color: blue;
+        }
+        .bot {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Mental Health Chat</h2>
+        <div id="chat-box"></div>
+        <form id="chat-form">
+            <input type="text" id="msg" placeholder="Type your message..." required style="width: 80%;">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatBox = document.getElementById('chat-box');
+
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msgInput = document.getElementById('msg');
+            const userMessage = msgInput.value;
+
+            chatBox.innerHTML += `<div class="message user"><strong>You:</strong> ${userMessage}</div>`;
+            msgInput.value = '';
+
+            const response = await fetch('/get', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `msg=${encodeURIComponent(userMessage)}`
+            });
+
+            const botReply = await response.text();
+            chatBox.innerHTML += `<div class="message bot"><strong>Bot:</strong> ${botReply}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+<a href="/home">Go to Home Page</a>
+
+</html>
